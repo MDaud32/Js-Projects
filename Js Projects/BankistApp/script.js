@@ -83,7 +83,7 @@ const displayMovements = function (movement) {
       <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}s</div>
-      <div class="movements__value">${mov}</div>
+      <div class="movements__value">${mov}€</div>
     </div>`;
 
     containerMovements.insertAdjacentHTML('afterbegin', html);
@@ -95,62 +95,54 @@ function calPrintBalance(movements) {
   const balance = movements.reduce((acc, mov, i) => {
     return acc + mov;
   }, 0);
-  labelBalance.textContent = `${balance} EUR`;
+  labelBalance.textContent = `${balance}€`;
 }
 calPrintBalance(account1.movements);
 
+function calDisplaySummery(movements) {
+  const income = movements
+    .filter((mov) => {
+      return mov > 0;
+    })
+    .reduce((acc, mov) => {
+      return acc + mov;
+    }, 0);
+  labelSumIn.textContent = `${income}€`;
+  const out = movements
+    .filter((mov) => {
+      return mov < 0;
+    })
+    .reduce((acc, curr) => {
+      return acc + curr;
+    }, 0);
+  labelSumOut.textContent = `${out}€`;
+
+  const intrest = movements
+    .filter((mov) => {
+      return mov > 0;
+    })
+    .map((dep) => {
+      return (dep * 1.2) / 100;
+    })
+    .filter((int) => {
+      return int >= 1;
+    })
+    .reduce((acc, curr) => {
+      return acc + curr;
+    }, 0);
+  labelSumInterest.textContent = `${intrest}€`;
+}
+calDisplaySummery(account1.movements);
+
 function createUserName(account) {
-  account.forEach(acc => {
+  account.forEach((acc) => {
     acc.userName = acc.owner
       .toLowerCase()
       .split(' ')
-      .map(name => {
+      .map((name) => {
         return name[0];
       })
       .join('');
   });
 }
 createUserName(accounts);
-
-const toUSdoller = 1.1;
-
-// const depositeToUsd = movements
-//   .filter(mov => {
-//     return mov > 0;
-//   })
-//   .map(mov => {
-//     return mov * toUSdoller;
-//   })
-//   .reduce((acc, curr) => {
-//     return acc + curr;
-//   }, 0);
-// console.log(depositeToUsd);
-// const deposits = movements.filter(mov => {
-//   return mov > 0;
-// });
-// console.log(movements);
-// console.log(deposits);
-
-// const withdrawals = movements.filter(mov => {
-//   return mov < 0;
-// });
-// console.log(withdrawals);
-
-// const balance = movements.reduce(function (acc, cur, i, arr) {
-//   console.log(`itration ${i} : ${acc}`);
-//   return acc + cur;
-// }, 0);
-// console.log(balance);
-// const eurToUsd = 1.1;
-// const moveUSD = movements.map(mov => {
-//   return mov * eurToUsd;
-// });
-
-// console.log(movements, moveUSD);
-// const movDescription = movements.map((mov, i) => {
-//   return `Movement ${i + 1} : you ${
-//     mov > 0 ? 'deposited' : 'withdrew'
-//   } ${Math.abs(mov)}`;
-// });
-
-// console.log(movDescription);
