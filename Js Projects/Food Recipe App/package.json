@@ -1,0 +1,17 @@
+{
+  "name": "recipe-app",
+  "version": "1.0.0",
+  "description": "recipe app",
+  "main": "controller.js",
+  "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build index.html"
+  },
+  "author": "M.Daud",
+  "license": "ISC",
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.7.0",
+    "parcel": "^2.0.0",
+    "sass": "^1.26.10"
+  }
+}

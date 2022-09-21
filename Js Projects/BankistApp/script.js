@@ -80,7 +80,21 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 /////////////////////////////////////////////////
 // Functions
+const formatmovementDate = function (date) {
+  const daysPassed = (date1, date2) =>
+    Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
 
+  const dayPassed = daysPassed(new Date(), date);
+  if (dayPassed === 0) return 'today';
+  if (dayPassed === 1) return 'yesterday';
+  if (dayPassed <= 7) return `${dayPassed} days ago`;
+  else {
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
+};
 const displayMovements = function (acc, sort = false) {
   containerMovements.innerHTML = '';
 
@@ -91,11 +105,7 @@ const displayMovements = function (acc, sort = false) {
   movs.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     const date = new Date(acc.movementsDates[i]);
-
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    const displayDate = `${day}/${month}/${year}`;
+    const displayDate = formatmovementDate(date);
 
     const html = `
       <div class="movements__row">
@@ -168,14 +178,6 @@ currentAccount = account1;
 updateUI(currentAccount);
 containerApp.style.opacity = 100;
 
-const now = new Date();
-const day = now.getDate();
-const month = now.getMonth() + 1;
-const year = now.getFullYear();
-const hour = now.getHours();
-const min = now.getMinutes();
-labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
-
 btnLogin.addEventListener('click', function (e) {
   // Prevent form from submitting
   e.preventDefault();
@@ -190,6 +192,14 @@ btnLogin.addEventListener('click', function (e) {
       currentAccount.owner.split(' ')[0]
     }`;
     containerApp.style.opacity = 100;
+
+    const now = new Date();
+    const day = now.getDate();
+    const month = now.getMonth() + 1;
+    const year = now.getFullYear();
+    const hour = now.getHours();
+    const min = now.getMinutes();
+    labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
 
     // Clear input fields
     inputLoginUsername.value = inputLoginPin.value = '';
@@ -217,6 +227,8 @@ btnTransfer.addEventListener('click', function (e) {
     // Doing the transfer
     currentAccount.movements.push(-amount);
     receiverAcc.movements.push(amount);
+    currentAccount.movementsDate.push(new Date().toISOString());
+    receiverAcc.movementsDates.push(new Date().toISOString());
 
     // Update UI
     updateUI(currentAccount);
@@ -234,6 +246,7 @@ btnLoan.addEventListener('click', function (e) {
   ) {
     // Add movement
     currentAccount.movements.push(amount);
+    currentAccount.movementsDates.push(new Date().toISOString());
 
     // Update UI
     updateUI(currentAccount);
