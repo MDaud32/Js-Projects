@@ -548,13 +548,13 @@ const controlRecipes = async function() {
         await _modelJs.loadRecipe(id);
         (0, _recipeViewDefault.default).render(_modelJs.state.recipe);
     } catch (error) {
-        console.log(error);
+        (0, _recipeViewDefault.default).renderError();
     }
 };
-[
-    "hashchange",
-    "load"
-].forEach((e)=>window.addEventListener(e, controlRecipes));
+const init = function() {
+    (0, _recipeViewDefault.default).addHandlerRender(controlRecipes);
+};
+init();
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","core-js/modules/web.immediate.js":"49tUX","regenerator-runtime/runtime":"dXNgZ","./model.js":"Y4A21","./recipeView":"jSwDy"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
@@ -2299,8 +2299,8 @@ const loadRecipe = async function(id) {
         };
     } catch (err) {
         console.log(`${err} wrong url`);
+        throw err;
     }
-    console.log(state.recipe);
 };
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./config":"k5Hzs","./helper":"lVRAz"}],"k5Hzs":[function(require,module,exports) {
@@ -2344,6 +2344,7 @@ var _fractional = require("fractional");
 class recipeView {
     #parentElement = document.querySelector(".recipe");
     #data;
+    #errorMessage = "we could not find that recipe. please try another one";
     render(data) {
         this.#data = data;
         const markup = this.#generateMarkup();
@@ -2363,6 +2364,26 @@ class recipeView {
         this.#parentElement.innerHTML = "";
         this.#parentElement.insertAdjacentHTML("afterbegin", markup);
     };
+    renderError(message = this.#errorMessage) {
+        const markup = `
+    <div class='error'>
+    <div>
+    <svg>
+    <use href='${(0, _iconsSvgDefault.default)}#icon-alert-triangle'></use>
+    </svg>
+    </div>
+    <p>${message}</p>
+    </div>
+    `;
+        this.#clear();
+        this.#parentElement.insertAdjacentHTML("afterbegin", markup);
+    }
+    addHandlerRender(handler) {
+        [
+            "hashchange",
+            "load"
+        ].forEach((e)=>window.addEventListener(e, handler));
+    }
      #generateMarkup() {
         return ` <figure class="recipe__fig">
           <img src="${this.#data.image}" alt="${this.#data.title}" class="recipe__img" />

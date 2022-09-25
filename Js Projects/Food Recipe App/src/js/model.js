@@ -21,6 +21,6 @@ export const loadRecipe = async function (id) {
     };
   } catch (err) {
     console.log(`${err} wrong url`);
+    throw err;
   }
-  console.log(state.recipe);
 };
