@@ -8,7 +8,9 @@ import resultView from './resultView.js';
 // https://forkify-api.herokuapp.com/v2
 
 ///////////////////////////////////////
-
+if (module.hot) {
+  module.hot.accept();
+}
 const controlRecipes = async function () {
   try {
     const id = window.location.hash.slice(1);
@@ -28,7 +30,7 @@ const controllerSearch = async function () {
     const query = searchView.getQuery();
     if (!query) return;
     await model.loadSearchResults(query);
-    resultView.render(model.state.search.results);
+    resultView.render(model.getSearchResultPage(2));
   } catch (err) {
     console.log(err);
   }
