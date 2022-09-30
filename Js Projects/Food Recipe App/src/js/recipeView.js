@@ -8,7 +8,7 @@ class recipeView extends View {
   _message = '';
 
   addHandlerRender(handler) {
-    ['hashchange', 'load'].forEach(e => window.addEventListener(e, handler));
+    [('hashchange', 'load')].forEach(e => window.addEventListener(e, handler));
   }
 
   _generateMarkup() {
